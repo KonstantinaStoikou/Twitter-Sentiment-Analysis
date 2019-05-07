@@ -1,0 +1,52 @@
+NOTES:
+
+- test stemming vs lemmatization in accuracy
+- test different stemmers in accuracy
+- test different data cleaning techniques in accuracy
+- test vectorization with cleaned vs raw data
+- test with different number of features
+- data analysis before or after lemmatization ?
+- same quotes everywhere
+- urls at start of code
+- for wordclouds only remove words such as tomorrow, night, u and keep only words that do not appear in both negative and positive tweets
+- data analysis before or after lemmatization
+
+TODAY:
+- add feautures to word embedding vectors vectors + bonus
+- test KNN, SVM Classifiers
+    - test KNN for word embeddings
+    - test KNN for lexica features
+
+STEPS:
+- Add features to word embedding vectors (+ bonus)
+- Classifiers
+    - bonus: Round Robin
+- Visualize results
+- Jupyter Notebook
+- Test different cases (as stated above)
+
+
+NOTES FOR JUPYTER NOTEBOOK: 
+
+PREPROCESSING:
+- delete duplicate rows
+- clean data
+- tokenize data
+- remove stopwords
+
+DATA CLEANING TECHNIQUES:
+- remove extra whitespaces
+- make all letters lowercase
+- remove @mention
+- remove punctuation, numbers, hashtag symbols
+- remove HTML encoding
+
+DATA ANALYSIS:
+- most frequent words generally (plot + wordcloud)
+- most frequent words in positive tweets (plot + wordcloud)
+- most frequent words in negative tweets (plot + wordcloud)
+- most frequent words in neutral tweets (plot + wordcloud)
+- positive, negative, neutral tweets frequency (plots + pie)
+
+STEMMING:
+- Use Snowball stemmer because it is Porter 2 stemmer (an improved version of Porter which is widely used)
