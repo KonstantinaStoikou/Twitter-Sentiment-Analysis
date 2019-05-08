@@ -17,13 +17,11 @@ def bag_of_words(series):
 
     tweet_list = series.tolist()
 
-    # if cleaned argument is true that means data are cleaned and already tokenized, else data are raw
-    # if cleaned is True:
     bow_vectorizer = CountVectorizer(
         tokenizer=dummy, preprocessor=dummy, max_features=1000)
-    # else:
-    #     bow_vectorizer = CountVectorizer(
-    #         max_df=1.0, min_df=1, max_features=2000, stop_words='english')
+
+    # bow_vectorizer = CountVectorizer(
+    #     max_df=1.0, min_df=1, max_features=1000, stop_words='english')
 
     matr = bow_vectorizer.fit_transform(tweet_list)
 
@@ -37,13 +35,11 @@ def tf_idf(series):
 
     tweet_list = series.tolist()
 
-    # if cleaned argument is true that means data are cleaned and already tokenized, else data are raw
-    # if cleaned is True:
     tfidf_vectorizer = TfidfVectorizer(
         tokenizer=dummy, preprocessor=dummy, max_features=1000)
-    # else:
-    #     tfidf_vectorizer = TfidfVectorizer(
-    #         max_df=1.0, min_df=1, max_features=1000, stop_words='english')
+
+    # tfidf_vectorizer = TfidfVectorizer(
+    #     max_df=1.0, min_df=1, max_features=1000, stop_words='english')
 
     matr = tfidf_vectorizer.fit_transform(tweet_list)
 
