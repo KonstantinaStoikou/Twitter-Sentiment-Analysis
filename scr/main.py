@@ -10,105 +10,114 @@ from classification import SVM, KNN
 def main():
     """ The main function to invoke when the main.py program is running. """
 
-    # example to csv
-    # train_df.to_csv(
-    #     "./../twitter_data/owncsv/cleaned_train.csv", index=False, header=True)
+    # SET YOUR LOCAL PATHS to be used later in the program
+    # paths to train/test/evaluation data files
+    train_path = './../twitter_data/train2017.tsv'
+    test_path = './../twitter_data/test2017.tsv'
+    eval_path = './../twitter_data/                     SemEval2017_task4_subtaskA_test_english_gold.txt'
+    # the path to the folder to store pickle files
+    pickles_path = './pickles/'
+    # the path to the pretrained word2vec model
+    pretrainmodel_path = '../../GoogleNews-vectors-negative300.bin'
+    # path to the folder with lexicas
+    lexica_path = './../lexica/'
+    # path to folder to store images
+    images_path = './stats_images/'
 
+    # TRAIN DATA PROCESSING
     # read train data and store them in a dataframe
-    # train_df = pd.read_csv("./../twitter_data/train2017.tsv", engine='python',
-    #                        sep='\t+', names=['Id', 'Number2', 'Sentiment', 'Tweet'])
+    train_df = pd.read_csv(train_path, engine='python', sep='\t+',
+                           names=['Id', 'Number2', 'Sentiment', 'Tweet'])
 
     # DATA CLEANING
     # clean data and tokenize them
     # train_df = preprocess(train_df, 'Tweet')
     # lemmatize data
-    # train_df['Tweet'] = train_df['Tweet'].apply(lambda x: stem(x))
+    # train_df['Tweet'] = train_df['Tweet'].apply(lambda x: lem(x))
 
     # save cleaned dataframes to pickle file
-    # train_df.to_pickle("./pickles/stem_train.pkl")
+    # train_df.to_pickle(pickles_path + 'lem_train.pkl')
     # load cleaned dataframes from pickle file
-    train_df = pd.read_pickle("./pickles/lem_train.pkl")
+    # train_df = pd.read_pickle(pickles_path + 'lem_train.pkl')
 
     # DATA ANALYSIS
     # make statistical analysis on the data
-    # analyze_data(train_df, 'Sentiment', 'Tweet')
+    # analyze_data(train_df, 'Sentiment', 'Tweet', images_path)
 
     # TRAIN W2V MODEL
     # model_w2v = train_model(train_df['Tweet'])
-    # model_w2v.save('pickles/model_w2v.pkl')
-    # model_w2v = Word2Vec.load('pickles/model_w2v.pkl')
-    # tsne_plot(model_w2v)
+    # model_w2v.save(pickles_path + 'model_w2v.pkl')
+    # model_w2v = Word2Vec.load(pickles_path + 'model_w2v.pkl')
+    # tsne_plot(model_w2v, images_path)
 
     # LOAD GOOGLE NEWS PRETRAINED MODEL
-    model_w2v = gensim.models.KeyedVectors.load_word2vec_format(
-        '../../GoogleNews-vectors-negative300.bin', binary=True)
+    # model_w2v = gensim.models.KeyedVectors.load_word2vec_format(
+    #     pretrainmodel_path, binary=True)
 
     # CONVERT LEXICA TEXT FILES TO DICT
-    affin_dict = lexica_to_dict('./../lexica/affin/affin.txt')
-    emotweet_dict = lexica_to_dict('./../lexica/emotweet/valence_tweet.txt')
-    generic_dict = lexica_to_dict('./../lexica/generic/generic.txt')
-    nrc_dict = lexica_to_dict('./../lexica/nrc/val.txt')
-    nrctag_dict = lexica_to_dict('./../lexica/nrctag/val.txt')
+    # affin_dict = lexica_to_dict(lexica_path + 'affin/affin.txt')
+    # emotweet_dict = lexica_to_dict(lexica_path + 'emotweet/valence_tweet.txt')
+    # generic_dict = lexica_to_dict(lexica_path + 'generic/generic.txt')
+    # nrc_dict = lexica_to_dict(lexica_path + 'nrc/val.txt')
+    # nrctag_dict = lexica_to_dict(lexica_path + 'nrctag/val.txt')
 
     # VECTORIZATION:
-    bow_ser = bag_of_words(train_df['Tweet'])
-    tfidf_ser = tf_idf(train_df['Tweet'])
-    we_ser = word_embedding(train_df['Tweet'], model_w2v)
-    lex_ser = lexica_features(train_df['Tweet'], we_ser, [affin_dict,                   emotweet_dict ,generic_dict, nrc_dict, nrctag_dict])
+    # xbow_train = bag_of_words(train_df['Tweet'])
+    # xtfidf_train = tf_idf(train_df['Tweet'])
+    # xwe_train = word_embedding(train_df['Tweet'], model_w2v)
+    # xlex_train = lexica_features(train_df['Tweet'], we_ser, [
+    #     affin_dict, emotweet_dict, generic_dict, nrc_dict, nrctag_dict])
 
-    # add new series to train dataframe
-    train_df = pd.concat((train_df, bow_ser.rename('BOW')), axis=1)
-    train_df = pd.concat((train_df, tfidf_ser.rename('TFIDF')), axis=1)
-    train_df = pd.concat((train_df, we_ser.rename('WE')), axis=1)
-    train_df = pd.concat((train_df, lex_ser.rename('LEX')), axis=1)
-
-    # save cleaned dataframes to pickle file
-    train_df[['Id', 'BOW', 'TFIDF', 'WE', 'LEX']].to_pickle("./pickles/vectors_train.pkl")
+    # save cleaned dataframes to pickle files
+    # xbow_train.to_pickle(pickles_path + 'bow_train.pkl')
+    # xtfidf_train.to_pickle(pickles_path + 'tfidf_train.pkl')
+    # xwe_train.to_pickle(pickles_path + 'we_train.pkl')
+    # xlex_train.to_pickle(pickles_path + 'lex_train.pkl')
     # load cleaned dataframes from pickle file
-    # train_df = pd.read_pickle("./pickles/vectors_train.pkl")
+    xbow_train = pd.read_pickle(pickles_path + 'bow_train.pkl')
+    xtfidf_train = pd.read_pickle(pickles_path + 'tfidf_train.pkl')
+    xwe_train = pd.read_pickle(pickles_path + 'we_train.pkl')
+    xlex_train = pd.read_pickle(pickles_path + 'lex_train.pkl')
 
+    # TRAIN DATA PROCESSING
     # read test data to a pandas dataframe
-    # test_df = pd.read_csv("./../twitter_data/test2017.tsv", engine='python',
-    #                       sep='\t+', names=['Id', 'Number2', 'Sentiment', 'Tweet'])
+    test_df = pd.read_csv(test_path, engine='python', sep='\t+',
+                          names=['Id', 'Number2', 'Sentiment', 'Tweet'])
 
     # DATA CLEANING
     # test_df = preprocess(test_df, 'Tweet')
     # test_df['Tweet'] = test_df['Tweet'].apply(lambda x: stem(x))
 
     # save cleaned dataframes to pickle file
-    # test_df.to_pickle("./pickles/lem_test.pkl")
+    # test_df.to_pickle(pickles_path + 'lem_test.pkl')
     # load cleaned dataframes from pickle file
-    test_df = pd.read_pickle("./pickles/lem_test.pkl")
+    # test_df = pd.read_pickle(pickles_path + 'lem_test.pkl')
 
     # VECTORIZATION:
-    bow_ser = bag_of_words(test_df['Tweet'])
-    tfidf_ser = tf_idf(test_df['Tweet'])
-    we_ser = word_embedding(test_df['Tweet'], model_w2v)
-    lex_ser = lexica_features(test_df['Tweet'], we_ser, [affin_dict,                   emotweet_dict ,generic_dict, nrc_dict, nrctag_dict])
-
-    # add new series to train dataframe
-    test_df = pd.concat((test_df, bow_ser.rename('BOW')), axis=1)
-    test_df = pd.concat((test_df, tfidf_ser.rename('TFIDF')), axis=1)
-    test_df = pd.concat((test_df, we_ser.rename('WE')), axis=1)
-    test_df = pd.concat((test_df, lex_ser.rename('LEX')), axis=1)
+    # xbow_test = bag_of_words(test_df['Tweet'])
+    # xtfidf_test = tf_idf(test_df['Tweet'])
+    # xwe_test = word_embedding(test_df['Tweet'], model_w2v)
+    # xlex_test = lexica_features(test_df['Tweet'], we_ser, [
+    #     affin_dict, emotweet_dict, generic_dict, nrc_dict, nrctag_dict])
 
     # save new dataframes to pickle files
-    test_df[['Id', 'BOW', 'TFIDF', 'WE', 'LEX']].to_pickle("./pickles/vectors_test.pkl")
+    # xbow_test.to_pickle(pickles_path + 'bow_test.pkl')
+    # xtfidf_test.to_pickle(pickles_path + 'tfidf_test.pkl')
+    # xwe_test.to_pickle(pickles_path + 'we_test.pkl')
+    # xlex_test.to_pickle(pickles_path + 'lex_test.pkl')
     # load dataframes only with ids and tweet vectors from pickle files
-    # test_df = pd.read_pickle("./pickles/vectors_test.pkl")
-
-    # train_df[['WE', 'BOW', 'TFIDF']].head(1).to_csv(
-    #     "./../twitter_data/owncsv/tessst.csv", index=False, header=True)
-    # print(type(test_df['WE'].iloc[0]), type(
-    #     test_df['BOW'].iloc[0]), type(test_df['TFIDF'].iloc[0]))
+    xbow_test = pd.read_pickle(pickles_path + 'bow_test.pkl')
+    xtfidf_test = pd.read_pickle(pickles_path + 'tfidf_test.pkl')
+    xwe_test = pd.read_pickle(pickles_path + 'we_test.pkl')
+    xlex_test = pd.read_pickle(pickles_path + 'lex_test.pkl')
 
     # read answers file to use in the evaluation of predictions
-    # eval_df = pd.read_fwf("./../twitter_data/SemEval2017_task4_subtaskA_test_english_gold.txt",
-    #                       engine='python', sep='\t+', names=['Id', 'Sentiment'])
+    eval_df = pd.read_fwf(eval_path, engine='python',
+                          sep='\t+', names=['Id', 'Sentiment'])
 
-    # f1 = KNN(train_df['TFIDF'], train_df['Sentiment'],
-    #          test_df['TFIDF'], eval_df['Sentiment'], 1)
-    # print("tfidf + KNN f1 score is ", f1)
+    f1 = KNN(xbow_train, train_df['Sentiment'],
+             xbow_test, eval_df['Sentiment'], 15)
+    print("bow + KNN f1 score is ", f1)
 
 
 if __name__ == "__main__":

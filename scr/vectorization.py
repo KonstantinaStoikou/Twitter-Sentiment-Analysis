@@ -65,7 +65,7 @@ def train_model(series):
     return model_w2v
 
 
-def tsne_plot(model):
+def tsne_plot(model, path):
     """ Create a TSNE model and plot it. """
 
     labels = []
@@ -91,8 +91,7 @@ def tsne_plot(model):
         plt.scatter(x[i], y[i])
         plt.annotate(labels[i], xy=(x[i], y[i]), xytext=(
             5, 2), textcoords='offset points', ha='right', va='bottom')
-    plt.savefig('stats_images/pretrained_tsne_plot.png')
-    # plt.show()
+    plt.savefig(path + 'pretrained_tsne_plot.png')
     plt.close()
 
 
@@ -146,6 +145,9 @@ def lexica_features(tweets, vectors, lex_list):
         # if there is no word in the tweet, consider valence of every lexica as zero and add them to the word embedding vector as new features
         if len(tweet) == 0:
             for k in lex_list:
+                # for mean
+                vectors_list[i].append(0)
+                # for standard deviation
                 vectors_list[i].append(0)
         else:
             # for each given lexica find mean of valences of the words of the tweet
@@ -165,9 +167,13 @@ def lexica_features(tweets, vectors, lex_list):
                 mean = sum(val_list) / len(val_list)
                 # add feature to vector: mean of valences from this lexica
                 vectors_list[i].append(mean)
-                sd = statistics.stdev(val_list)
                 # add feature to vector: standard deviation of valences from this lexica
-                vectors_list[i].append(sd)
+                if len(val_list) > 1:
+                    # standard deviation can be defined for at least two data points
+                    sd = statistics.stdev(val_list)
+                    vectors_list[i].append(sd)
+                else:
+                    vectors_list[i].append(0)
 
     ser = pd.Series(vectors_list)
     # return series of vectors for tweets

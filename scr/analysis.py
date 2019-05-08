@@ -5,7 +5,7 @@ from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 from matplotlib.ticker import MaxNLocator
 
 
-def analyze_data(df, sentiment_col, tweet_col):
+def analyze_data(df, sentiment_col, tweet_col, path):
     """ Make statistical analysis on data and visualize it. """
 
     # create empty dictionaries to store all encountered words and their frequencies
@@ -34,13 +34,13 @@ def analyze_data(df, sentiment_col, tweet_col):
 
     # visualize statistics
     visualize_stats(all_dict, 'all_plot.png', 'all_cloud.png',
-                    'Word frequency in all tweets')
+                    'Word frequency in all tweets', path)
     visualize_stats(pos_dict, 'pos_plot.png', 'pos_cloud.png',
-                    'Word frequency in positive tweets')
+                    'Word frequency in positive tweets', path)
     visualize_stats(neg_dict, 'neg_plot.png', 'neg_cloud.png',
-                    'Word frequency in negative tweets')
+                    'Word frequency in negative tweets', path)
     visualize_stats(neu_dict, 'neu_plot.png', 'neu_cloud.png',
-                    'Word frequency in neutral tweets')
+                    'Word frequency in neutral tweets', path)
 
     # make plot for emotion frequency
     emotions = ('Positive', 'Negative', 'Neutral')
@@ -53,7 +53,7 @@ def analyze_data(df, sentiment_col, tweet_col):
             color=['forestgreen', 'firebrick', 'goldenrod'])
     plt.xticks(range(len(emotions)), emotions)
     plt.title('Tweet frequency based on emotion')
-    plt.savefig('stats_images/emotion_plot.png')
+    plt.savefig(path + 'emotion_plot.png')
     plt.close()
 
     # make pie for emotion frequency
@@ -64,7 +64,7 @@ def analyze_data(df, sentiment_col, tweet_col):
             autopct='%1.1f%%', startangle=140)
     plt.title('Tweet frequency based on emotion')
     plt.axis('equal')
-    plt.savefig('stats_images/emotion_pie.png')
+    plt.savefig(path + 'emotion_pie.png')
     plt.close()
 
 
@@ -88,7 +88,7 @@ def iterate_words(counter, li, all_dict, emotion_dict):
     return counter
 
 
-def visualize_stats(diction, plot_image_name, wordcloud_image_name, plot_title):
+def visualize_stats(diction, plot_image_name, wordcloud_image_name, plot_title,     path):
     """ Given a dictionary, visualize the statistics in horizontal-bar plot and wordcloud and save them as images. """
 
     # sort dictionary by values
@@ -107,7 +107,7 @@ def visualize_stats(diction, plot_image_name, wordcloud_image_name, plot_title):
     plt.xlabel('Frequency')
     plt.title(plot_title)
     # save figure to an image
-    plt.savefig('stats_images/' + plot_image_name, bbox_inches="tight")
+    plt.savefig(path + plot_image_name, bbox_inches="tight")
     plt.close()
 
     # make word clouds (maximum 100 words)
@@ -116,5 +116,5 @@ def visualize_stats(diction, plot_image_name, wordcloud_image_name, plot_title):
     plt.imshow(wc)
     plt.axis("off")
     # save cloud to an image
-    wc.to_file('stats_images/' + wordcloud_image_name)
+    wc.to_file(path + wordcloud_image_name)
     plt.close()
