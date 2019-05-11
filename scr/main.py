@@ -5,6 +5,7 @@ from analysis import analyze_data
 from vectorization import bag_of_words, tf_idf, train_model, tsne_plot, word_embedding, lexica_features, lexica_to_dict
 from gensim.models import Word2Vec
 from classification import SVM, KNN
+from nltk import word_tokenize
 
 
 def main():
@@ -31,28 +32,30 @@ def main():
 
     # DATA CLEANING
     # clean data and tokenize them
-    train_df = preprocess(train_df, 'Tweet')
+    # train_df = preprocess(train_df, 'Tweet')
     # lemmatize data
-    train_df['Tweet'] = train_df['Tweet'].apply(lambda x: stem(x))
+    # train_df['Tweet'] = train_df['Tweet'].apply(lambda x: lemmatize(x))
+
+    # train_df['Tweet'] = train_df['Tweet'].apply(lambda x: word_tokenize(x))
 
     # # save cleaned dataframes to pickle file
-    train_df.to_pickle(pickles_path + 'stem_train.pkl')
+    # train_df.to_pickle(pickles_path + 'lem_train.pkl')
     # # load cleaned dataframes from pickle file
-    # train_df = pd.read_pickle(pickles_path + 'stem_train.pkl')
+    train_df = pd.read_pickle(pickles_path + 'lem_train.pkl')
 
     # DATA ANALYSIS
     # make statistical analysis on the data
     # analyze_data(train_df, 'Sentiment', 'Tweet', images_path)
 
     # TRAIN W2V MODEL
-    # model_w2v = train_model(train_df['Tweet'])
+    model_w2v = train_model(train_df['Tweet'])
     # model_w2v.save(pickles_path + 'model_w2v.pkl')
     # model_w2v = Word2Vec.load(pickles_path + 'model_w2v.pkl')
     # tsne_plot(model_w2v, images_path)
 
     # LOAD GOOGLE NEWS PRETRAINED MODEL
-    model_w2v = gensim.models.KeyedVectors.load_word2vec_format(
-        pretrainmodel_path, binary=True)
+    # model_w2v = gensim.models.KeyedVectors.load_word2vec_format(
+    #     pretrainmodel_path, binary=True)
 
     # CONVERT LEXICA TEXT FILES TO DICT
     affin_dict = lexica_to_dict(lexica_path + 'affin/affin.txt')
@@ -86,12 +89,12 @@ def main():
 
     # DATA CLEANING
     # test_df = preprocess(test_df, 'Tweet')
-    # test_df['Tweet'] = test_df['Tweet'].apply(lambda x: stem(x))
+    # test_df['Tweet'] = test_df['Tweet'].apply(lambda x: lemmatize(x))
 
     # save cleaned dataframes to pickle file
-    # test_df.to_pickle(pickles_path + 'stem_test.pkl')
+    # test_df.to_pickle(pickles_path + 'lem_test.pkl')
     # load cleaned dataframes from pickle file
-    test_df = pd.read_pickle(pickles_path + 'stem_test.pkl')
+    test_df = pd.read_pickle(pickles_path + 'lem_test.pkl')
 
     # VECTORIZATION:
     # xbow_test = bag_of_words(test_df['Tweet'])
@@ -115,37 +118,13 @@ def main():
     eval_df = pd.read_fwf(eval_path, engine='python',
                           sep='\t+', names=['Id', 'Sentiment'])
 
-    f1 = KNN(xwe_train, train_df['Sentiment'],
-             xwe_test, eval_df['Sentiment'], 1)
-    print("we(pretrained) + stem + KNN(1) f1 score is ", f1)
+    f1 = SVM(xwe_train, train_df['Sentiment'],
+             xwe_test, eval_df['Sentiment'])
+    print("we(trained) + lem + SVM f1 score is ", f1)
 
-    f1 = KNN(xwe_train, train_df['Sentiment'],
-             xwe_test, eval_df['Sentiment'], 5)
-    print("we(pretrained) + stem + KNN(5) f1 score is ", f1)
-
-    f1 = KNN(xwe_train, train_df['Sentiment'],
-             xwe_test, eval_df['Sentiment'], 10)
-    print("we(pretrained) + stem + KNN(10) f1 score is ", f1)
-
-    f1 = KNN(xwe_train, train_df['Sentiment'],
-             xwe_test, eval_df['Sentiment'], 15)
-    print("we(pretrained) + stem + KNN(15) f1 score is ", f1)
-
-    f1 = KNN(xlex_train, train_df['Sentiment'],
-             xlex_test, eval_df['Sentiment'], 1)
-    print("lex(pretrained) + stem + KNN(1) f1 score is ", f1)
-
-    f1 = KNN(xlex_train, train_df['Sentiment'],
-             xlex_test, eval_df['Sentiment'], 5)
-    print("lex(pretrained) + stem + KNN(5) f1 score is ", f1)
-
-    f1 = KNN(xlex_train, train_df['Sentiment'],
-             xlex_test, eval_df['Sentiment'], 10)
-    print("lex(pretrained) + stem + KNN(10) f1 score is ", f1)
-
-    f1 = KNN(xlex_train, train_df['Sentiment'],
-             xlex_test, eval_df['Sentiment'], 15)
-    print("lex(pretrained) + stem + KNN(15) f1 score is ", f1)
+    f1 = SVM(xlex_train, train_df['Sentiment'],
+             xlex_test, eval_df['Sentiment'])
+    print("lex(trained) + lem + SVM f1 score is ", f1)
 
 
 if __name__ == "__main__":

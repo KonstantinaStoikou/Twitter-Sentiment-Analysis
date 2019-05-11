@@ -1,18 +1,14 @@
 NOTES:
 
-- test stemming vs lemmatization in accuracy
-- test vectorization with cleaned vs raw data
 - test with different number of features
 
-TODAY:
-- test KNN
-    - train/test split:
-        - test stem vs lemma 
-        - test best number of neighbors
-    - we
-    - lexica
-    - find optimal number of neighbors
+TOMORROW:
 - Round Robin
+
+WEEKEND:
+- Jupyter Notebook
+- results table
+- check code again
 
 STEPS:
 - Classifiers
@@ -20,7 +16,6 @@ STEPS:
     - bonus: Round Robin
 - Visualize results (excel)
 - Jupyter Notebook (recheck)
-- Test different cases (as stated above)
 
 
 NOTES FOR JUPYTER NOTEBOOK: 

@@ -20,6 +20,7 @@ def bag_of_words(series):
     bow_vectorizer = CountVectorizer(
         tokenizer=dummy, preprocessor=dummy, max_features=1000)
 
+    # for cleaned data uncomment this line and coment the above
     # bow_vectorizer = CountVectorizer(
     #     max_df=1.0, min_df=1, max_features=1000, stop_words='english')
 
@@ -38,6 +39,7 @@ def tf_idf(series):
     tfidf_vectorizer = TfidfVectorizer(
         tokenizer=dummy, preprocessor=dummy, max_features=1000)
 
+    # for cleaned data uncomment this line and coment the above
     # tfidf_vectorizer = TfidfVectorizer(
     #     max_df=1.0, min_df=1, max_features=1000, stop_words='english')
 
