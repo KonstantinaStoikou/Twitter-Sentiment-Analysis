@@ -4,7 +4,7 @@ from preprocessing import preprocess, stem, lemmatize
 from analysis import analyze_data
 from vectorization import bag_of_words, tf_idf, train_model, tsne_plot, word_embedding, lexica_features, lexica_to_dict
 from gensim.models import Word2Vec
-from classification import SVM, KNN
+from classification import SVM, KNN, RoundRobin
 from nltk import word_tokenize
 
 
@@ -41,14 +41,14 @@ def main():
     # # save cleaned dataframes to pickle file
     # train_df.to_pickle(pickles_path + 'lem_train.pkl')
     # # load cleaned dataframes from pickle file
-    train_df = pd.read_pickle(pickles_path + 'lem_train.pkl')
+    # train_df = pd.read_pickle(pickles_path + 'lem_train.pkl')
 
     # DATA ANALYSIS
     # make statistical analysis on the data
     # analyze_data(train_df, 'Sentiment', 'Tweet', images_path)
 
     # TRAIN W2V MODEL
-    model_w2v = train_model(train_df['Tweet'])
+    # model_w2v = train_model(train_df['Tweet'])
     # model_w2v.save(pickles_path + 'model_w2v.pkl')
     # model_w2v = Word2Vec.load(pickles_path + 'model_w2v.pkl')
     # tsne_plot(model_w2v, images_path)
@@ -58,18 +58,18 @@ def main():
     #     pretrainmodel_path, binary=True)
 
     # CONVERT LEXICA TEXT FILES TO DICT
-    affin_dict = lexica_to_dict(lexica_path + 'affin/affin.txt')
-    emotweet_dict = lexica_to_dict(lexica_path + 'emotweet/valence_tweet.txt')
-    generic_dict = lexica_to_dict(lexica_path + 'generic/generic.txt')
-    nrc_dict = lexica_to_dict(lexica_path + 'nrc/val.txt')
-    nrctag_dict = lexica_to_dict(lexica_path + 'nrctag/val.txt')
+    # affin_dict = lexica_to_dict(lexica_path + 'affin/affin.txt')
+    # emotweet_dict = lexica_to_dict(lexica_path + 'emotweet/valence_tweet.txt')
+    # generic_dict = lexica_to_dict(lexica_path + 'generic/generic.txt')
+    # nrc_dict = lexica_to_dict(lexica_path + 'nrc/val.txt')
+    # nrctag_dict = lexica_to_dict(lexica_path + 'nrctag/val.txt')
 
     # VECTORIZATION:
     # xbow_train = bag_of_words(train_df['Tweet'])
     # xtfidf_train = tf_idf(train_df['Tweet'])
-    xwe_train = word_embedding(train_df['Tweet'], model_w2v)
-    xlex_train = lexica_features(train_df['Tweet'], xwe_train, [
-        affin_dict, emotweet_dict, generic_dict, nrc_dict, nrctag_dict])
+    # xwe_train = word_embedding(train_df['Tweet'], model_w2v)
+    # xlex_train = lexica_features(train_df['Tweet'], xwe_train, [
+    #     affin_dict, emotweet_dict, generic_dict, nrc_dict, nrctag_dict])
 
     # save cleaned dataframes to pickle files
     # xbow_train.to_pickle(pickles_path + 'bow_train.pkl')
@@ -79,8 +79,8 @@ def main():
     # load cleaned dataframes from pickle file
     # xbow_train = pd.read_pickle(pickles_path + 'bow_train.pkl')
     # xtfidf_train = pd.read_pickle(pickles_path + 'tfidf_train.pkl')
-    # xwe_train = pd.read_pickle(pickles_path + 'we_train.pkl')
-    # xlex_train = pd.read_pickle(pickles_path + 'lex_train.pkl')
+    xwe_train = pd.read_pickle(pickles_path + 'we_train.pkl')
+    xlex_train = pd.read_pickle(pickles_path + 'lex_train.pkl')
 
     # TRAIN DATA PROCESSING
     # read test data to a pandas dataframe
@@ -94,14 +94,14 @@ def main():
     # save cleaned dataframes to pickle file
     # test_df.to_pickle(pickles_path + 'lem_test.pkl')
     # load cleaned dataframes from pickle file
-    test_df = pd.read_pickle(pickles_path + 'lem_test.pkl')
+    # test_df = pd.read_pickle(pickles_path + 'lem_test.pkl')
 
     # VECTORIZATION:
     # xbow_test = bag_of_words(test_df['Tweet'])
     # xtfidf_test = tf_idf(test_df['Tweet'])
-    xwe_test = word_embedding(test_df['Tweet'], model_w2v)
-    xlex_test = lexica_features(test_df['Tweet'], xwe_test, [
-        affin_dict, emotweet_dict, generic_dict, nrc_dict, nrctag_dict])
+    # xwe_test = word_embedding(test_df['Tweet'], model_w2v)
+    # xlex_test = lexica_features(test_df['Tweet'], xwe_test, [
+    #     affin_dict, emotweet_dict, generic_dict, nrc_dict, nrctag_dict])
 
     # # save new dataframes to pickle files
     # xbow_test.to_pickle(pickles_path + 'bow_test.pkl')
@@ -111,20 +111,21 @@ def main():
     # # load dataframes only with ids and tweet vectors from pickle files
     # xbow_test = pd.read_pickle(pickles_path + 'bow_test.pkl')
     # xtfidf_test = pd.read_pickle(pickles_path + 'tfidf_test.pkl')
-    # xwe_test = pd.read_pickle(pickles_path + 'we_test.pkl')
-    # xlex_test = pd.read_pickle(pickles_path + 'lex_test.pkl')
+    xwe_test = pd.read_pickle(pickles_path + 'we_test.pkl')
+    xlex_test = pd.read_pickle(pickles_path + 'lex_test.pkl')
 
     # read answers file to use in the evaluation of predictions
     eval_df = pd.read_fwf(eval_path, engine='python',
                           sep='\t+', names=['Id', 'Sentiment'])
 
-    f1 = SVM(xwe_train, train_df['Sentiment'],
-             xwe_test, eval_df['Sentiment'])
-    print("we(trained) + lem + SVM f1 score is ", f1)
+    # f1 = SVM(xwe_train, train_df['Sentiment'],
+    #          xwe_test, eval_df['Sentiment'])
+    # print("we(trained) + lem + SVM f1 score is ", f1)
 
-    f1 = SVM(xlex_train, train_df['Sentiment'],
-             xlex_test, eval_df['Sentiment'])
-    print("lex(trained) + lem + SVM f1 score is ", f1)
+    f1 = RoundRobin(xlex_train, train_df['Sentiment'],
+                    xlex_test, eval_df['Sentiment'], 40)
+
+    print("lex(pretrained) + lem + RR f1 score is ", f1)
 
 
 if __name__ == "__main__":
