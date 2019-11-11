@@ -1,3 +1,6 @@
 # ignore all pickle files
 *.pkl
+
 *.csv
+
+*.pyc
